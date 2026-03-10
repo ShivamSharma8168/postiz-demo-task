@@ -1,0 +1,47 @@
+name: Deploy Postiz to EC2
+
+on:
+  push:
+    branches:
+      - dev
+      - prod
+
+jobs:
+
+  deploy-dev:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to DEV Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          script: |
+            cd ~/postiz-demo-task
+            git fetch origin
+            git checkout dev
+            git pull origin dev
+            docker-compose down
+            docker-compose up -d --build
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/prod'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to PROD Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            cd ~/postiz-demo-task
+            git fetch origin
+            git checkout prod
+            git pull origin prod
+            docker-compose down
+            docker-compose up -d --build

@@ -95,7 +95,7 @@ export function Login() {
             <div className="flex flex-col gap-[12px]">
               <div className="text-textColor">
                 <Input
-                  label="Email"
+                  label="My EMAIL  Email"
                   translationKey="label_email"
                   {...form.register('email')}
                   type="email"
